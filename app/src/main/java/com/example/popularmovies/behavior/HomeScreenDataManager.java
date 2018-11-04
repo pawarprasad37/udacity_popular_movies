@@ -34,14 +34,12 @@ public class HomeScreenDataManager implements NetworkCallback {
     }
 
     public void pullListWithPath(String path) {
-        if (!Util.isConnectedToInternet()) {
+        if (!Util.isConnectedToInternet(mainActivity.getApplicationContext())) {
             Toast.makeText(mainActivity, mainActivity.getString(R.string.no_internet_error),
                     Toast.LENGTH_LONG).show();
             return;
         }
         progressBar.setVisibility(View.VISIBLE);
-        tvActiveFilter.setText("");
-        recyclerView.setAdapter(null);
         NetworkManager.pullMovieList(mainActivity.getApplicationContext(), path, this);
     }
 
@@ -65,6 +63,8 @@ public class HomeScreenDataManager implements NetworkCallback {
             return;
         }
         progressBar.setVisibility(View.GONE);
+        tvActiveFilter.setText("");
+        recyclerView.setAdapter(null);
         HomeScreenMovieAdapter adapter = new HomeScreenMovieAdapter(mainActivity, movies);
         recyclerView.setAdapter(adapter);
         tvActiveFilter.setText(activeFilter);
@@ -73,5 +73,7 @@ public class HomeScreenDataManager implements NetworkCallback {
     @Override
     public void onFailure() {
         progressBar.setVisibility(View.GONE);
+        Toast.makeText(mainActivity, mainActivity.getString(R.string.no_internet_error),
+                Toast.LENGTH_LONG).show();
     }
 }

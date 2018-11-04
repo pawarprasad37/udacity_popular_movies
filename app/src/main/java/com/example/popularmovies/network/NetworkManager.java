@@ -55,6 +55,7 @@ public class NetworkManager {
                     final List<Movie> movies = new Gson().fromJson(movieJsonArray.toString(),
                             new TypeToken<List<Movie>>() {
                             }.getType());
+
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -65,7 +66,12 @@ public class NetworkManager {
                         }
                     });
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onFailure();
+                        }
+                    });
                 } finally {
                     if (urlConnection != null) {
                         urlConnection.disconnect();
