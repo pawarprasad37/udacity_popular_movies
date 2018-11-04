@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="most_popular">Most popular</string>
+    <string name="home_filter_title">Filter list</string>
+    <string name="highest_rated">Highest rated</string>
+    <string name="no_internet_error">You are offline. Please check your connectivity.</string>
+    <string name="movie_details_unavailable_error">Movie details not available.</string>
+    <string name="release_date">Release date:</string>
+    <string name="vote_average">Vote average:</string>
+    <string name="plot_synopsis">Plot synopsis:</string>
+</resources>
