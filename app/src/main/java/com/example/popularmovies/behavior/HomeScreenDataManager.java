@@ -11,13 +11,13 @@ import com.example.popularmovies.R;
 import com.example.popularmovies.Util;
 import com.example.popularmovies.activity.MainActivity;
 import com.example.popularmovies.adapter.HomeScreenMovieAdapter;
-import com.example.popularmovies.interfaces.NetworkCallback;
+import com.example.popularmovies.interfaces.MovieFetchCallback;
 import com.example.popularmovies.model.Movie;
 import com.example.popularmovies.network.NetworkManager;
 
 import java.util.List;
 
-public class HomeScreenDataManager implements NetworkCallback {
+public class HomeScreenDataManager implements MovieFetchCallback {
     public static final int NUMBER_OF_COLUMNS = 3;
     private static boolean isFetching;
 

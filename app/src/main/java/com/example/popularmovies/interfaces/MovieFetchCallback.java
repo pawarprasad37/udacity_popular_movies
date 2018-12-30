@@ -4,7 +4,7 @@ import com.example.popularmovies.model.Movie;
 
 import java.util.List;
 
-public interface NetworkCallback {
+public interface MovieFetchCallback {
     void onSuccess(List<Movie> movies, String activeFilter);
 
     void onFailure();
