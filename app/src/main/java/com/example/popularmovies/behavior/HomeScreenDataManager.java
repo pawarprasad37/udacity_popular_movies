@@ -1,5 +1,8 @@
 package com.example.popularmovies.behavior;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,6 +17,7 @@ import com.example.popularmovies.adapter.HomeScreenMovieAdapter;
 import com.example.popularmovies.interfaces.MovieFetchCallback;
 import com.example.popularmovies.model.Movie;
 import com.example.popularmovies.network.NetworkManager;
+import com.example.popularmovies.viewmodel.FavouriteMovieViewModel;
 
 import java.util.List;
 
@@ -34,6 +38,10 @@ public class HomeScreenDataManager implements MovieFetchCallback {
     }
 
     public void pullListWithPath(String path) {
+        ViewModelProviders.of(mainActivity)
+                .get(FavouriteMovieViewModel.class)
+                .getFavouriteMovieList()
+                .removeObservers(mainActivity);
         if (!Util.isConnectedToInternet(mainActivity.getApplicationContext())) {
             Toast.makeText(mainActivity, mainActivity.getString(R.string.no_internet_error),
                     Toast.LENGTH_LONG).show();
@@ -75,5 +83,29 @@ public class HomeScreenDataManager implements MovieFetchCallback {
         progressBar.setVisibility(View.GONE);
         Toast.makeText(mainActivity, mainActivity.getString(R.string.no_internet_error),
                 Toast.LENGTH_LONG).show();
+    }
+
+    public void displayFavourites() {
+        FavouriteMovieViewModel favouriteMovieViewModel = ViewModelProviders.of(mainActivity)
+                .get(FavouriteMovieViewModel.class);
+        favouriteMovieViewModel.getFavouriteMovieList()
+                .observe(mainActivity, new Observer<List<Movie>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Movie> movies) {
+                        progressBar.setVisibility(View.GONE);
+                        tvActiveFilter.setText("");
+                        recyclerView.setAdapter(null);
+                        tvActiveFilter.setText(mainActivity.getString(R.string.favourites));
+                        if (movies == null || movies.isEmpty()) {
+                            Toast.makeText(mainActivity,
+                                    mainActivity.getString(R.string.error_no_favourites),
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        HomeScreenMovieAdapter adapter = new HomeScreenMovieAdapter(mainActivity,
+                                movies);
+                        recyclerView.setAdapter(adapter);
+                    }
+                });
     }
 }

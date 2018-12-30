@@ -1,11 +1,14 @@
 package com.example.popularmovies.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
+@Entity(tableName = "movie")
 public class Movie {
     @SerializedName("id")
+    @PrimaryKey
     private long id;
 
     @SerializedName("vote_count")

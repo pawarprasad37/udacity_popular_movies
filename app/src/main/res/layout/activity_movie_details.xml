@@ -11,12 +11,29 @@
         android:orientation="vertical"
         tools:context=".activity.MovieDetailsActivity">
 
-        <ImageView
-            android:id="@+id/ivPoster"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:scaleType="fitCenter" />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivPoster"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:scaleType="fitCenter" />
+
+            <ImageButton
+                android:id="@+id/ibtFav"
+                android:layout_width="@dimen/button_size_normal"
+                android:layout_height="@dimen/button_size_normal"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_margin="@dimen/padding_margin_medium"
+                android:background="?attr/selectableItemBackground"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/ic_start_empty" />
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

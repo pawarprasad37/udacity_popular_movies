@@ -1,5 +1,6 @@
 package com.example.popularmovies.activity;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
@@ -10,6 +11,7 @@ import android.view.View;
 import com.example.popularmovies.Constant;
 import com.example.popularmovies.behavior.HomeScreenDataManager;
 import com.example.popularmovies.R;
+import com.example.popularmovies.viewmodel.FavouriteMovieViewModel;
 
 public class MainActivity extends AppCompatActivity {
     private HomeScreenDataManager dataManager;
@@ -44,13 +46,18 @@ public class MainActivity extends AppCompatActivity {
         PopupMenu popupMenu = new PopupMenu(this, item);
         popupMenu.getMenu().add(getString(R.string.most_popular));
         popupMenu.getMenu().add(getString(R.string.highest_rated));
+        popupMenu.getMenu().add(getString(R.string.favourites));
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 if (menuItem.getTitle().toString().contentEquals(getString(R.string.most_popular))) {
                     dataManager.pullListWithPath(Constant.POPULAR_URL_PATH);
-                } else {
+                } else if (menuItem.getTitle().toString()
+                        .contentEquals(getString(R.string.highest_rated))) {
                     dataManager.pullListWithPath(Constant.TOP_RATED_URL_PATH);
+                } else {
+                    //favourites selected
+                    dataManager.displayFavourites();
                 }
                 return true;
             }

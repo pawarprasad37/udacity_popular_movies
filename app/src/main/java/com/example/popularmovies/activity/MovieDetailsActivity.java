@@ -2,19 +2,23 @@ package com.example.popularmovies.activity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.popularmovies.AppExecutors;
 import com.example.popularmovies.Constant;
 import com.example.popularmovies.R;
+import com.example.popularmovies.database.AppDatabase;
 import com.example.popularmovies.interfaces.ReviewFetchCallback;
 import com.example.popularmovies.interfaces.TrailerFetchCallback;
 import com.example.popularmovies.model.Movie;
@@ -52,6 +56,89 @@ public class MovieDetailsActivity extends AppCompatActivity {
         populateUI(movie);
 
         fetchMovieData();
+
+        checkFavouriteStatus();
+
+        findViewById(R.id.ibtFav).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleMovieFavourite();
+            }
+        });
+    }
+
+    private void checkFavouriteStatus() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Movie movie = AppDatabase.getInstance(getApplicationContext())
+                        .getMovieDao()
+                        .getMovieById(MovieDetailsActivity.this.movie.getId());
+                if (movie == null) {
+                    AppExecutors.getInstance().mainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((ImageButton) findViewById(R.id.ibtFav))
+                                    .setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                                            R.mipmap.ic_start_empty));
+                        }
+                    });
+                } else {
+                    AppExecutors.getInstance().mainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((ImageButton) findViewById(R.id.ibtFav))
+                                    .setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                                            R.mipmap.ic_start_filled));
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void toggleMovieFavourite() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Movie movie = AppDatabase.getInstance(getApplicationContext())
+                        .getMovieDao()
+                        .getMovieById(MovieDetailsActivity.this.movie.getId());
+                if (movie == null) {
+                    //add movie to DB
+                    AppDatabase.getInstance(getApplicationContext())
+                            .getMovieDao()
+                            .addMovieToFavourites(MovieDetailsActivity.this.movie);
+                    AppExecutors.getInstance().mainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((ImageButton) findViewById(R.id.ibtFav))
+                                    .setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                                            R.mipmap.ic_start_filled));
+                            Toast.makeText(getApplicationContext(), getString(R.string.add_to_fav_success),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    });
+                } else {
+                    //remove movie from DB
+                    AppDatabase.getInstance(getApplicationContext())
+                            .getMovieDao()
+                            .removeMovieFromFavourites(movie);
+                    AppExecutors.getInstance().mainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((ImageButton) findViewById(R.id.ibtFav))
+                                    .setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                                            R.mipmap.ic_start_empty));
+                            Toast.makeText(getApplicationContext(), getString(R.string.remove_from_fav_success),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void fetchMovieData() {

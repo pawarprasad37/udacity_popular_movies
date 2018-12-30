@@ -10,4 +10,8 @@
     <string name="plot_synopsis">Plot synopsis:</string>
     <string name="movie_trailers">Trailers:</string>
     <string name="movie_reviews">Reviews</string>
+    <string name="add_to_fav_success">Movie added to favourites</string>
+    <string name="remove_from_fav_success">Movie removed from favourites</string>
+    <string name="favourites">Favourites</string>
+    <string name="error_no_favourites">Zero favourite movies</string>
 </resources>
