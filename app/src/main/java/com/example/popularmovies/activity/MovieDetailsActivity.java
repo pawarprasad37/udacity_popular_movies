@@ -6,12 +6,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.popularmovies.Constant;
 import com.example.popularmovies.R;
 import com.example.popularmovies.model.Movie;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.squareup.picasso.Picasso;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
@@ -37,9 +37,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void populateUI(Movie movie) {
-        Picasso.get()
+        Glide.with(this)
                 .load(movie.getPosterFullPath())
                 .into(((ImageView) findViewById(R.id.ivPoster)));
+//        Picasso.get()
+//                .load(movie.getPosterFullPath())
+//                .into(((ImageView) findViewById(R.id.ivPoster)));
 
         ((TextView) findViewById(R.id.tvReleaseDate))
                 .setText(movie.getReleaseDate());

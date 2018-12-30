@@ -18,7 +18,7 @@ import com.example.popularmovies.network.NetworkManager;
 import java.util.List;
 
 public class HomeScreenDataManager implements NetworkCallback {
-    private static final int NUMBER_OF_COLUMNS = 3;
+    public static final int NUMBER_OF_COLUMNS = 3;
     private static boolean isFetching;
 
     private MainActivity mainActivity;
