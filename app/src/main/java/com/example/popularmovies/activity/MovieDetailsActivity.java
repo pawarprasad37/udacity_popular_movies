@@ -15,12 +15,16 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.popularmovies.Constant;
 import com.example.popularmovies.R;
+import com.example.popularmovies.interfaces.ReviewFetchCallback;
 import com.example.popularmovies.interfaces.TrailerFetchCallback;
 import com.example.popularmovies.model.Movie;
+import com.example.popularmovies.model.MovieReview;
 import com.example.popularmovies.model.MovieTrailer;
 import com.example.popularmovies.network.NetworkManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -87,6 +91,48 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     llTrailerItems.addView(itemRootView,
                             new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT));
+                }
+            }
+        });
+
+        NetworkManager.pullMovieReviews(movie.getId(), new ReviewFetchCallback() {
+            @Override
+            public void onFailure() {
+                //ignore
+            }
+
+            @Override
+            public void onSuccess(List<MovieReview> movieReviews) {
+                if (movieReviews == null || movieReviews.isEmpty() || isFinishing()) {
+                    return;
+                }
+                findViewById(R.id.llReviews).setVisibility(View.VISIBLE);
+                displayReviewItems(movieReviews);
+            }
+
+            private void displayReviewItems(List<MovieReview> movieReviews) {
+                if (movieReviews == null || movieReviews.isEmpty()) {
+                    return;
+                }
+                LinearLayout llReviewItems = findViewById(R.id.llReviewItems);
+                llReviewItems.removeAllViews();
+
+                for (final MovieReview movieReview : movieReviews) {
+                    View itemRootView = LayoutInflater.from(getApplicationContext())
+                            .inflate(R.layout.movie_details_review_list_item, null);
+                    TextView tvAuthor = itemRootView.findViewById(R.id.tvAuthor);
+                    tvAuthor.setText(movieReview.getAuthor());
+                    TextView tvReview = itemRootView.findViewById(R.id.tvReview);
+                    tvReview.setText(movieReview.getContent());
+                    llReviewItems.addView(itemRootView);
+
+                    itemRootView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(Intent.ACTION_VIEW,
+                                    Uri.parse(movieReview.getUrl())));
+                        }
+                    });
                 }
             }
         });
